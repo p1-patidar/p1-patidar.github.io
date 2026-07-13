@@ -27,6 +27,9 @@
             --tag-text: #ededed;
             --selection-bg: #f81ce5;
             --selection-text: #fff;
+            /* Premium easing curves — used consistently across all motion */
+            --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         /* Scanline Effect */
@@ -71,6 +74,22 @@
                 transition-duration: 0.01ms !important;
                 scroll-behavior: auto !important;
             }
+            /* Show everything instantly — no rise/blur/shimmer/parallax */
+            .reveal-up {
+                opacity: 1 !important;
+                transform: none !important;
+                filter: none !important;
+            }
+            .hero-h1 .word-mask .word {
+                transform: none !important;
+                filter: none !important;
+            }
+            .hero-h1 {
+                background-image: linear-gradient(180deg, #fff 0%, #a1a1aa 100%) !important;
+            }
+            .ai-orb {
+                animation: none !important;
+            }
         }
 
         body {
@@ -99,12 +118,17 @@
             overflow: hidden;
         }
 
+        .ambient-bg {
+            transition: transform 0.6s var(--ease-soft);
+            will-change: transform;
+        }
+
         .ai-orb {
             position: absolute;
             border-radius: 50%;
             filter: blur(80px);
             opacity: 0.5;
-            animation: floatOrb 20s infinite alternate;
+            animation: floatOrb 36s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
         }
 
         .orb-1 {
@@ -113,7 +137,7 @@
             background: rgba(147, 51, 234, 0.4); /* Purple */
             top: -100px;
             left: -100px;
-            animation-duration: 25s;
+            animation-duration: 42s;
         }
 
         .orb-2 {
@@ -122,8 +146,8 @@
             background: rgba(59, 130, 246, 0.3); /* Blue */
             bottom: -200px;
             right: -100px;
-            animation-duration: 28s;
-            animation-delay: -5s;
+            animation-duration: 50s;
+            animation-delay: -8s;
         }
 
         .orb-3 {
@@ -132,14 +156,15 @@
             background: rgba(236, 72, 153, 0.3); /* Pink */
             top: 40%;
             left: 60%;
-            animation-duration: 22s;
-            animation-delay: -10s;
+            animation-duration: 38s;
+            animation-delay: -16s;
         }
 
         @keyframes floatOrb {
             0% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(30px, -50px) scale(1.1); }
-            66% { transform: translate(-20px, 20px) scale(0.9); }
+            20% { transform: translate(45px, -65px) scale(1.08); }
+            45% { transform: translate(-28px, -18px) scale(0.94); }
+            70% { transform: translate(32px, 42px) scale(1.05); }
             100% { transform: translate(0, 0) scale(1); }
         }
 
@@ -147,11 +172,11 @@
             max-width: 1080px;
             margin: 0 auto;
             padding: 0 1.5rem;
-            animation: fadeSlideUp 0.8s ease-out forwards;
+            animation: fadeSlideUp 1s var(--ease-premium) forwards;
         }
 
         @keyframes fadeSlideUp {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(16px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -165,7 +190,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            transition: all 0.3s ease;
+            transition: all 0.45s var(--ease-soft);
             max-width: var(--max-width);
             margin-left: auto;
             margin-right: auto;
@@ -214,11 +239,20 @@
             text-decoration: none;
             font-weight: 500;
             font-size: 0.95rem;
-            transition: color 0.2s ease;
+            transition: color 0.35s var(--ease-soft), background-size 0.45s var(--ease-premium);
             position: relative;
             display: inline-flex;
             align-items: center;
             gap: 0.4rem;
+            padding-bottom: 3px;
+            background-image: linear-gradient(90deg, #c4b5fd, #93c5fd);
+            background-repeat: no-repeat;
+            background-position: left bottom;
+            background-size: 0% 1.5px;
+        }
+
+        .nav-links a:hover {
+            background-size: 100% 1.5px;
         }
 
         .nav-links a::after {
@@ -237,7 +271,7 @@
             white-space: nowrap;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.2s var(--ease-premium);
             box-shadow: 0 4px 12px rgba(0,0,0,0.5);
             pointer-events: none;
             z-index: 10;
@@ -276,6 +310,20 @@
             max-width: 400px;
             position: relative;
         }
+        .hero-portrait.reveal-up {
+            transform: translateY(24px) scale(0.96);
+            filter: blur(12px);
+        }
+        .hero-portrait.reveal-up.active {
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+        }
+        /* Desktop-only pointer parallax target (JS sets transform after entrance) */
+        @media (hover: hover) and (pointer: fine) {
+            .hero-portrait {
+                transition: transform 0.5s var(--ease-soft);
+            }
+        }
         .hero-portrait::before {
             content: "";
             position: absolute;
@@ -303,7 +351,7 @@
             object-position: center 30%;
             z-index: 1;
             filter: grayscale(10%);
-            transition: transform 0.8s ease, filter 0.8s ease;
+            transition: transform 0.8s var(--ease-premium), filter 0.8s var(--ease-premium);
             -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 75%, transparent 100%);
             mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 75%, transparent 100%);
         }
@@ -362,9 +410,61 @@
             letter-spacing: -0.05em;
             line-height: 1.05;
             margin-bottom: 0.75rem;
-            background: linear-gradient(180deg, #fff 0%, #a1a1aa 100%);
+        }
+
+        /* Signature hero headline — word-by-word reveal + subtle shimmer sweep */
+        .hero-h1 {
+            background-image:
+                linear-gradient(180deg, #fff 0%, #a1a1aa 100%),
+                linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.85) 48%, transparent 66%);
+            background-size: 100% 100%, 260% 100%;
+            background-position: 0 0, -260% 0;
+            background-repeat: no-repeat;
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
+            animation: heroShimmer 6.5s ease-in-out 1.6s infinite;
+        }
+
+        @keyframes heroShimmer {
+            0%, 15% { background-position: 0 0, -260% 0; }
+            45%, 100% { background-position: 0 0, 260% 0; }
+        }
+
+        .hero-h1 .word-mask {
+            display: inline-block;
+            overflow: hidden;
+            vertical-align: top;
+            padding-bottom: 0.12em;
+            margin-bottom: -0.12em;
+        }
+
+        .hero-h1 .word {
+            display: inline-block;
+            transform: translateY(115%);
+            filter: blur(6px);
+            will-change: transform, filter;
+        }
+
+        .hero-h1.active .word-mask:nth-child(1) .word { animation: wordRise 0.45s var(--ease-premium) 0.18s forwards; }
+        .hero-h1.active .word-mask:nth-child(2) .word { animation: wordRise 0.45s var(--ease-premium) 0.25s forwards; }
+        .hero-h1.active .word-mask:nth-child(3) .word { animation: wordRise 0.45s var(--ease-premium) 0.32s forwards; }
+        .hero-h1.active .word-mask:nth-child(4) .word { animation: wordRise 0.45s var(--ease-premium) 0.39s forwards; }
+
+        @keyframes wordRise {
+            from { transform: translateY(115%); filter: blur(6px); }
+            to { transform: translateY(0); filter: blur(0); }
+        }
+
+        /* Container itself just fades — the words carry all the rise/blur motion */
+        .hero-h1.reveal-up {
+            transform: none;
+            filter: none;
+            transition: opacity 0.5s var(--ease-soft);
+        }
+        .hero-h1.reveal-up.active {
+            transform: none;
+            filter: none;
         }
 
         .hero-content p {
@@ -412,7 +512,7 @@
             font-size: 0.9rem;
             font-weight: 500;
             text-decoration: none;
-            transition: all 0.2s ease;
+            transition: all 0.35s var(--ease-soft);
             cursor: pointer;
             letter-spacing: -0.01em;
             gap: 0.5rem;
@@ -468,7 +568,7 @@
             -webkit-backdrop-filter: blur(12px);
             border-radius: 8px; /* Slightly more rounded */
             padding: 0.85rem 1.75rem;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.45s var(--ease-premium);
         }
 
         .hero-actions .btn-primary {
@@ -558,7 +658,7 @@
             border: 1px solid var(--card-border);
             border-radius: 12px;
             padding: 2rem;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.4s var(--ease-premium);
             display: flex;
             flex-direction: column;
             position: relative;
@@ -576,7 +676,7 @@
             background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.05), transparent 40%);
             z-index: 0;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.4s var(--ease-soft);
             pointer-events: none;
         }
 
@@ -586,7 +686,7 @@
 
         .card:hover {
             border-color: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 44px rgba(147, 51, 234, 0.10), 0 0 60px rgba(59, 130, 246, 0.06);
             background: rgba(20, 20, 20, 0.6);
             transform: translateY(-4px);
         }
@@ -608,7 +708,7 @@
             margin-bottom: 1.5rem;
             color: var(--text-primary);
             box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.3s var(--ease-premium);
         }
         
         .card:hover .card-icon {
@@ -651,7 +751,7 @@
             padding: 0.25rem 0.6rem;
             border-radius: 4px;
             border: 1px solid var(--card-border);
-            transition: all 0.2s;
+            transition: all 0.3s var(--ease-soft);
         }
 
         .tag:hover {
@@ -700,7 +800,7 @@
             border-radius: 50%;
             z-index: 2;
             box-shadow: 0 0 0 4px var(--bg-color);
-            transition: all 0.2s ease;
+            transition: all 0.35s var(--ease-soft);
         }
 
         .timeline-item:hover .timeline-dot {
@@ -724,7 +824,7 @@
             border: 1px solid var(--card-border);
             border-radius: 12px;
             padding: 1.75rem;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.3s var(--ease-premium);
         }
 
         .timeline-item:hover .timeline-content {
@@ -786,7 +886,7 @@
             text-decoration: none;
             font-weight: 500;
             font-size: 0.95rem;
-            transition: all 0.2s ease;
+            transition: all 0.35s var(--ease-soft);
             letter-spacing: -0.01em;
         }
 
@@ -794,12 +894,14 @@
             width: 18px;
             height: 18px;
             color: var(--text-primary);
-            transition: transform 0.2s ease;
+            transition: transform 0.35s var(--ease-premium);
         }
 
         .social-btn:hover {
             background: #111;
             border-color: var(--card-hover-border);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
         }
 
         .social-btn:hover svg {
@@ -814,13 +916,27 @@
         /* Animations */
         .reveal-up {
             opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(24px) scale(0.98);
+            filter: blur(8px);
+            transition: opacity 0.9s var(--ease-premium),
+                        transform 0.9s var(--ease-premium),
+                        filter 0.9s var(--ease-premium);
+            will-change: opacity, transform, filter;
         }
 
         .reveal-up.active {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+        }
+
+        /* Lighter, cheaper reveal on mobile — shorter distance, less blur, snappier */
+        @media (max-width: 850px) {
+            .reveal-up {
+                transform: translateY(16px) scale(0.99);
+                filter: blur(4px);
+                transition-duration: 0.6s;
+            }
         }
 
         /* Scroll Index */
@@ -840,7 +956,7 @@
             font-size: 0.75rem;
             color: var(--text-secondary);
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.3s var(--ease-premium);
             text-decoration: none;
             display: flex;
             align-items: center;
@@ -871,7 +987,7 @@
             opacity: 0;
             visibility: hidden;
             transform: translateX(-10px);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.3s var(--ease-premium);
             margin-left: 0.5rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
@@ -900,7 +1016,7 @@
             background: linear-gradient(90deg, rgba(200,200,200,0.5), #fff);
             width: 0%;
             z-index: 10000;
-            transition: width 0.1s ease-out;
+            will-change: width;
         }
 
         /* Skeleton Loading */
@@ -933,7 +1049,7 @@
             inset: 0;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), rgba(255,255,255,0.1), rgba(255,255,255,0.05), transparent);
             transform: translateX(-100%);
-            animation: shimmer 1.5s infinite;
+            animation: shimmer 1.6s ease-in-out infinite;
             z-index: 10;
         }
         
@@ -956,7 +1072,7 @@
                 pointer-events: none;
                 z-index: 9999;
                 transform: translate(-50%, -50%);
-                transition: opacity 0.4s ease;
+                transition: opacity 0.5s var(--ease-soft);
                 opacity: 0;
             }
             body:hover .cursor-glow {
@@ -966,6 +1082,42 @@
     </style>
 </head>
 <body class="is-loading">
+    <!-- Graceful no-JS fallback: without JS, .is-loading is never removed and .reveal-up
+         elements would never receive their .active class, so force everything to its
+         final, fully-visible, non-animated state. -->
+    <noscript>
+        <style>
+            body.is-loading .reveal-up,
+            body.is-loading .card,
+            body.is-loading .timeline-content {
+                opacity: 1 !important;
+                background: rgba(15, 15, 15, 0.4) !important;
+                border-color: var(--card-border) !important;
+            }
+            body.is-loading .card > *,
+            body.is-loading .timeline-content > *,
+            body.is-loading .timeline-dot,
+            body.is-loading .timeline-date {
+                opacity: 1 !important;
+            }
+            body.is-loading .card::before,
+            body.is-loading .timeline-content::before {
+                display: none !important;
+            }
+            .reveal-up {
+                opacity: 1 !important;
+                transform: none !important;
+                filter: none !important;
+            }
+            .hero-h1 .word-mask .word {
+                transform: none !important;
+                filter: none !important;
+            }
+            .cursor-glow {
+                display: none !important;
+            }
+        </style>
+    </noscript>
     <div class="cursor-glow"></div>
     <div class="scroll-progress" id="scrollProgress"></div>
     <div class="ambient-bg">
@@ -1016,20 +1168,20 @@
     <header class="hero" id="hero">
         <div class="container hero-grid">
             <div class="hero-content">
-                <span class="section-tag reveal-up" style="transition-delay: 0.1s;">
+                <span class="section-tag reveal-up" style="transition-delay: 0.08s;">
                     <i data-lucide="zap"></i> Open to full-stack / mobile / AI engineering roles
                 </span>
-                <h1 class="reveal-up" style="transition-delay: 0.2s;">Hi, I'm Pawan Patidar</h1>
-                <p class="reveal-up" style="transition-delay: 0.3s;">Full-Stack & Mobile Developer — building production AI products & fintech systems.<br>Co-Founder & CTO @ <strong>HuntForTomorrow</strong> · ex-HPCL</p>
+                <h1 class="reveal-up hero-h1" style="transition-delay: 0.2s;" aria-label="Hi, I'm Pawan Patidar"><span class="word-mask"><span class="word">Hi,</span></span> <span class="word-mask"><span class="word">I'm</span></span> <span class="word-mask"><span class="word">Pawan</span></span> <span class="word-mask"><span class="word">Patidar</span></span></h1>
+                <p class="reveal-up" style="transition-delay: 0.38s;">Full-Stack & Mobile Developer — building production AI products & fintech systems.<br>Co-Founder & CTO @ <strong>HuntForTomorrow</strong> · ex-HPCL</p>
             </div>
-            <div class="hero-portrait reveal-up" style="transition-delay: 0.35s;">
+            <div class="hero-portrait reveal-up" style="transition-delay: 0.62s;">
                 <img src="profile.jpg" alt="Pawan Patidar" onerror="this.src='https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=800&auto=format&fit=crop';">
             </div>
         </div>
     </header>
 
     <div class="container">
-        <div class="hero-actions-wrapper reveal-up" style="transition-delay: 0.4s; margin-bottom: 8rem; margin-top: 1rem;">
+        <div class="hero-actions-wrapper reveal-up" style="transition-delay: 0.52s; margin-bottom: 8rem; margin-top: 1rem;">
             <div class="hero-actions">
                 <a href="#projects" class="btn btn-primary" style="backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 8px; padding: 0.85rem 1.75rem;">View Projects</a>
                 <a href="https://github.com/p1-patidar" target="_blank" class="btn btn-secondary" style="backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 8px; padding: 0.85rem 1.75rem;"><i data-lucide="github"></i> GitHub</a>
@@ -1319,21 +1471,32 @@
     <script>
         lucide.createIcons();
 
-        // Reveal Animations Observer
+        // Motion capability flags — gate all pointer-based / decorative motion on these
+        const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const isCoarsePointer = matchMedia('(hover: none), (pointer: coarse)').matches;
+
+        // Reveal Animations Observer — tuned so items reveal at a natural moment
         const revealElements = document.querySelectorAll('.reveal-up');
         const revealOptions = {
-            threshold: 0.1,
-            rootMargin: "0px 0px -50px 0px"
+            threshold: 0.15,
+            rootMargin: "0px 0px -10% 0px"
         };
         const revealObserver = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                    observer.unobserve(entry.target);
+                    const el = entry.target;
+                    el.classList.add('active');
+                    // Drop will-change once the transition finishes so we're not
+                    // holding a compositor layer open for elements that are done animating.
+                    const clearWillChange = () => { el.style.willChange = 'auto'; };
+                    el.addEventListener('transitionend', clearWillChange, { once: true });
+                    // Safety net in case transitionend never fires (e.g. reduced motion / no transition)
+                    setTimeout(clearWillChange, 1200);
+                    observer.unobserve(el);
                 }
             });
         }, revealOptions);
-        
+
         revealElements.forEach(el => revealObserver.observe(el));
 
         // Scroll Index Observer
@@ -1361,15 +1524,36 @@
 
         sections.forEach(section => observer.observe(section));
 
-        // Sticky Nav Scroll effect
+        // Sticky Nav + Scroll Progress — combined into a single rAF-throttled handler
+        // so we only touch layout/paint once per frame no matter how fast scroll fires.
         const nav = document.querySelector('nav');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
+        const scrollProgress = document.getElementById('scrollProgress');
+        let scrollTicking = false;
+
+        function updateOnScroll() {
+            const scrollY = window.scrollY;
+
+            if (scrollY > 50) {
                 nav.classList.add('scrolled');
             } else {
                 nav.classList.remove('scrolled');
             }
-        });
+
+            const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = totalHeight > 0 ? (scrollY / totalHeight) * 100 : 0;
+            scrollProgress.style.width = progress + '%';
+
+            scrollTicking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!scrollTicking) {
+                requestAnimationFrame(updateOnScroll);
+                scrollTicking = true;
+            }
+        }, { passive: true });
+
+        updateOnScroll(); // set initial state on load
 
         // UI Interaction Sounds (Web Audio API)
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1402,14 +1586,6 @@
             el.addEventListener('mousedown', playInteractionSound);
         });
 
-        // Scroll Progress Indicator
-        const scrollProgress = document.getElementById('scrollProgress');
-        window.addEventListener('scroll', () => {
-            const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-            const progress = (window.scrollY / totalHeight) * 100;
-            scrollProgress.style.width = `${progress}%`;
-        });
-
         // Initial Loading Skeleton Removal
         window.addEventListener('load', () => {
             setTimeout(() => {
@@ -1417,48 +1593,116 @@
             }, 800); // 800ms loading skeleton state
         });
 
-        // Mouse glow & magnetic tilt effect for cards
-        const cards = document.querySelectorAll('.card');
-        cards.forEach(card => {
-            card.addEventListener('mouseenter', () => {
-                card.style.transition = 'all 0.1s ease, transform 0.1s linear';
+        // Pointer-driven effects (3D tilt, cursor glow, parallax) are DESKTOP ONLY.
+        // On touch/coarse pointers — or when the user prefers reduced motion — none of
+        // this runs at all, so mobile never pays for hover-only visual flourishes.
+        if (!isCoarsePointer && !reduceMotion) {
+
+            // Mouse glow & magnetic tilt effect for cards (rAF-throttled)
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                let tiltTicking = false;
+                let lastEvent = null;
+
+                card.addEventListener('mouseenter', () => {
+                    card.style.transition = 'transform 0.15s var(--ease-soft), box-shadow 0.3s var(--ease-soft)';
+                });
+
+                card.addEventListener('mousemove', e => {
+                    lastEvent = e;
+                    if (!tiltTicking) {
+                        requestAnimationFrame(() => {
+                            const rect = card.getBoundingClientRect();
+                            const x = lastEvent.clientX - rect.left;
+                            const y = lastEvent.clientY - rect.top;
+                            card.style.setProperty('--mouse-x', `${x}px`);
+                            card.style.setProperty('--mouse-y', `${y}px`);
+
+                            // Magnetic tilt calculations
+                            const centerX = rect.width / 2;
+                            const centerY = rect.height / 2;
+                            const rotateX = ((y - centerY) / centerY) * -4;
+                            const rotateY = ((x - centerX) / centerX) * 4;
+
+                            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02) translateY(-4px)`;
+                            tiltTicking = false;
+                        });
+                        tiltTicking = true;
+                    }
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transition = 'all 0.4s var(--ease-premium)';
+                    card.style.transform = '';
+                    card.style.setProperty('--mouse-x', `-1000px`); // move glow outside
+                    card.style.setProperty('--mouse-y', `-1000px`);
+                });
             });
-            card.addEventListener('mousemove', e => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                card.style.setProperty('--mouse-x', `${x}px`);
-                card.style.setProperty('--mouse-y', `${y}px`);
-                
-                // Magnetic tilt calculations
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                const rotateX = ((y - centerY) / centerY) * -4;
-                const rotateY = ((x - centerX) / centerX) * 4;
-                
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02) translateY(-4px)`;
-            });
-            card.addEventListener('mouseleave', () => {
-                card.style.transition = 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
-                card.style.transform = '';
-                card.style.setProperty('--mouse-x', `-1000px`); // move glow outside
-                card.style.setProperty('--mouse-y', `-1000px`);
-            });
-        });
-        // Cursor Glow Logic
-        const cursorGlow = document.querySelector('.cursor-glow');
-        
-        if (matchMedia('(pointer: fine)').matches && cursorGlow) {
+
+            // Cursor Glow Logic (rAF-throttled)
+            const cursorGlow = document.querySelector('.cursor-glow');
+            if (cursorGlow) {
+                let glowTicking = false;
+                let lastGlowEvent = null;
+
+                document.addEventListener('mousemove', (e) => {
+                    lastGlowEvent = e;
+                    if (!glowTicking) {
+                        requestAnimationFrame(() => {
+                            cursorGlow.style.left = `${lastGlowEvent.clientX}px`;
+                            cursorGlow.style.top = `${lastGlowEvent.clientY}px`;
+                            glowTicking = false;
+                        });
+                        glowTicking = true;
+                    }
+                });
+                document.addEventListener('mouseenter', () => {
+                    cursorGlow.style.opacity = '1';
+                });
+                document.addEventListener('mouseleave', () => {
+                    cursorGlow.style.opacity = '0';
+                });
+            }
+
+            // Subtle pointer-parallax — hero portrait (within the hero only) + ambient orbs (page-wide)
+            const heroEl = document.getElementById('hero');
+            const portraitEl = document.querySelector('.hero-portrait');
+            const ambientBg = document.querySelector('.ambient-bg');
+            let parallaxTicking = false;
+            let lastParallaxEvent = null;
+
             document.addEventListener('mousemove', (e) => {
-                cursorGlow.style.left = `${e.clientX}px`;
-                cursorGlow.style.top = `${e.clientY}px`;
+                lastParallaxEvent = e;
+                if (!parallaxTicking) {
+                    requestAnimationFrame(() => {
+                        const px = (lastParallaxEvent.clientX / window.innerWidth) - 0.5;
+                        const py = (lastParallaxEvent.clientY / window.innerHeight) - 0.5;
+
+                        if (ambientBg) {
+                            ambientBg.style.transform = `translate3d(${px * 18}px, ${py * 14}px, 0)`;
+                        }
+                        parallaxTicking = false;
+                    });
+                    parallaxTicking = true;
+                }
             });
-            document.addEventListener('mouseenter', () => {
-                cursorGlow.style.opacity = '1';
-            });
-            document.addEventListener('mouseleave', () => {
-                cursorGlow.style.opacity = '0';
-            });
+
+            if (heroEl && portraitEl) {
+                heroEl.addEventListener('mousemove', (e) => {
+                    // Only once the hero entrance itself has finished, so parallax
+                    // never fights the choreographed rise/scale/blur-in.
+                    if (!portraitEl.classList.contains('active')) return;
+                    const rect = heroEl.getBoundingClientRect();
+                    const px = ((e.clientX - rect.left) / rect.width) - 0.5;
+                    const py = ((e.clientY - rect.top) / rect.height) - 0.5;
+                    portraitEl.style.transform = `translate3d(${px * -14}px, ${py * -10}px, 0)`;
+                });
+                heroEl.addEventListener('mouseleave', () => {
+                    if (portraitEl.classList.contains('active')) {
+                        portraitEl.style.transform = 'translate3d(0, 0, 0)';
+                    }
+                });
+            }
         }
 
     </script>
